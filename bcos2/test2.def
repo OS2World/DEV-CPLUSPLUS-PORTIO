@@ -1,0 +1,31 @@
+; -------------------------------------------------------------------------
+; This definition module will allow linking of a BCOS2 program
+; with the portio.obj assembly language segment, giving the assembly
+; language segment IOPL priveleges.
+;
+;
+; Explanation of some statements
+;
+; CODE IOPL                           Default IOPL in segments of class CODE
+; PROTMODE                            This is a protect mode program only
+; SEGMENTS                            Starts list of segment modifiers
+; P@IOCODE  CLASS 'CODE' IOPL ALIAS   Attempt to set IOPL only on P@IOCODE -
+;                                     This fails, hence the CODE IOPL above
+;
+; ---------------------------------------------------------------------------
+NAME test2
+
+DESCRIPTION 'Test program statically linked with inp/outp module'
+PROTMODE
+CODE PRELOAD EXECUTEONLY
+
+SEGMENTS
+ P@IOCODE    CLASS 'CODE' EXECUTEONLY PRELOAD IOPL
+
+EXPORTS
+ _inp    1
+ _outp   2
+ _inpw   1
+ _outpw  2
+
+

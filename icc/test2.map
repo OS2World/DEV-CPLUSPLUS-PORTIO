@@ -1,0 +1,24 @@
+
+ test2
+
+ Start         Length     Name                   Class
+ 0001:00000000 000000000H P@IOCODE               CODE 16-bit
+ 0001:00000000 00000449CH CODE32                 CODE 32-bit
+ 0002:00000000 000000019H CODE16                 CODE 16-bit
+ 0003:00000000 000000030H _MSGSEG32              CODE 32-bit
+ 0004:00000000 000000012H P@IOCODE               CODE 16-bit
+ 0005:00000000 000000008H LIBDATA16              DATA16 16-bit
+ 0006:00000000 0000007C4H DATA32                 DATA 32-bit
+ 0006:000007D0 00000022CH CONST32                CONST 32-bit
+ 0006:000009FC 00000000CH EDC1                   EDC_CLASS 32-bit
+ 0006:00000A08 0000001A4H EDC2                   EDC_CLASS 32-bit
+ 0006:00000BAC 000000004H EDC3                   EDC_CLASS 32-bit
+ 0006:00000BB0 000000000H BSS32                  BSS 32-bit
+ 0006:00000BB0 0000000B4H c_common               BSS 32-bit
+ 0006:00000C70 000002000H STACK32                STACK 32-bit
+
+ Origin   Group
+ 0006:0   DGROUP
+ 0000:0   FLAT
+
+Program entry point at 0001:0368

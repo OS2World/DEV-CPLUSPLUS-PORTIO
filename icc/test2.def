@@ -1,0 +1,38 @@
+; -------------------------------------------------------------------------
+; This definition module will allow linking of a CSET/2 program
+; with the portio.obj assembly language segment, giving the assembly
+; language segment IOPL priveleges.  
+;
+; To data, I have not figured out how to specify the SEGMENT of an
+; assembly language program with alternate attributes through the
+; .DEF module.  However, using "CODE IOPL", the IOPL priveleges can
+; be granted to all segments, and then the privelege taken away from
+; all other segments.  This removal is critical since the 32 bit code
+; segment CANNOT have IOPL priveleges (SYS3175 error on run).
+;
+; Explanation of some statements
+;
+; CODE IOPL                           Default IOPL in segments of class CODE
+; PROTMODE                            This is a protect mode program only
+; SEGMENTS                            Starts list of segment modifiers
+; P@IOCODE  CLASS 'CODE' IOPL ALIAS   Attempt to set IOPL only on P@IOCODE -
+;                                     This fails, hence the CODE IOPL above
+; CODE32    CLASS 'CODE' NOIOPL       Remove IOPL from CSET 32 bit segment
+; CODE16    CLASS 'CODE' NOIOPL       Remove IOPL from CSET 16 bit segment
+; _MSGSEG32 CLASS 'CODE' NOIOPL       Remove IOPL from another CSEG segment
+;
+; This seems to be a full enumeration of the 'CODE' class segments I've run
+; across in CSET/2 programming.
+; ---------------------------------------------------------------------------
+NAME test2 WINDOWCOMPAT
+
+DESCRIPTION 'Test program statically linked with inp/outp module'
+
+PROTMODE
+CODE IOPL
+
+SEGMENTS
+P@IOCODE  CLASS 'CODE' IOPL ALIAS
+CODE32    CLASS 'CODE' NOIOPL
+CODE16    CLASS 'CODE' NOIOPL
+_MSGSEG32 CLASS 'CODE' NOIOPL

@@ -1,0 +1,120 @@
+
+ Start         Length     Name                   Class
+ 0001:00000000 0000006FCH _TEXT                  CODE
+ 0002:00000000 000000000H PORTIO_TEXT            CODE
+ 0002:00000000 0000000DAH P@IOCODE               CODE
+ 0003:00000000 0000001F0H _DATA                  DATA
+ 0003:000001F0 000000000H _INIT_                 INITDATA
+ 0003:000001F0 000000000H _INITEND_              INITDATA
+ 0003:000001F0 000000000H _EXIT_                 EXITDATA
+ 0003:000001F0 000000000H _EXITEND_              EXITDATA
+ 0003:000001F0 000000000H CONST                  CONST
+ 0003:000001F0 0000000B0H _BSS                   BSS
+
+  Address         Publics by Name
+
+ 0003:00000064       _errno
+ 0001:0000009F       _exit
+ 0002:00000070  Idle _inp
+ 0002:000000A7  Idle _inpw
+ 0001:000000F0       _memset
+ 0002:00000000  Idle _outp
+ 0002:0000003A  Idle _outpw
+ 0001:00000000  Idle __acrtused
+ 0003:00000068       __atexitcnt
+ 0003:000001F0       __atexittbl
+ 0003:00000284       __C0argc
+ 0003:00000288       __C0argv
+ 0003:0000028C       __C0environ
+ 0003:0000002B       __c0_heaps
+ 0003:0000002F       __c0_nheaps
+ 0001:000000C5  Idle __cexit
+ 0001:000003B4       __cleanup
+ 0001:00000560       __control87
+ 0001:0000015E       __create_shmem
+ 0001:000000D1  Idle __c_exit
+ 0003:00000060       __default87
+ 0001:000006F0       __dllmain
+ 0003:00000270       __dll_table
+ 0003:0000029C  Idle __doserrno
+ 0003:000000C0  Idle __dosErrorToSV
+ 0003:00000278       __ExcRegPtr
+ 0001:000000B2       __exit
+ 0003:0000006C       __exitbuf
+ 0003:00000070       __exitfopen
+ 0003:00000074  Idle __exitopen
+ 0003:000000A8       __fmode
+ 0003:00000078       __fmodeptr
+ 0001:0000058C       __fpreset
+ 0001:000006C0       __getpid
+ 0001:000000E0       __initfmode
+ 0001:000005A0       __initmatherr
+ 0001:000001E2       __init_exit_proc
+ 0001:000005D0       __matherr
+ 0001:00000610       __matherrl
+ 0003:0000007C       __multidll
+ 0003:00000048       __os2hmod
+ 0003:00000280       __oscmd
+ 0003:0000027C       __osenv
+ 0003:000000A0       __pmatherr
+ 0003:000000A4       __pmatherrl
+ 0001:0000029F  Idle __startup
+ 0001:00000480       __startupd
+ 0003:00000298       __stkbase
+ 0001:00000460       __terminate
+ 0001:000006A8       ___DOSerror
+ 0001:00000660       ___IOerror
+
+  Address         Publics by Value
+
+ 0001:00000000  Idle __acrtused
+ 0001:0000009F       _exit
+ 0001:000000B2       __exit
+ 0001:000000C5  Idle __cexit
+ 0001:000000D1  Idle __c_exit
+ 0001:000000E0       __initfmode
+ 0001:000000F0       _memset
+ 0001:0000015E       __create_shmem
+ 0001:000001E2       __init_exit_proc
+ 0001:0000029F  Idle __startup
+ 0001:000003B4       __cleanup
+ 0001:00000460       __terminate
+ 0001:00000480       __startupd
+ 0001:00000560       __control87
+ 0001:0000058C       __fpreset
+ 0001:000005A0       __initmatherr
+ 0001:000005D0       __matherr
+ 0001:00000610       __matherrl
+ 0001:00000660       ___IOerror
+ 0001:000006A8       ___DOSerror
+ 0001:000006C0       __getpid
+ 0001:000006F0       __dllmain
+ 0002:00000000  Idle _outp
+ 0002:0000003A  Idle _outpw
+ 0002:00000070  Idle _inp
+ 0002:000000A7  Idle _inpw
+ 0003:0000002B       __c0_heaps
+ 0003:0000002F       __c0_nheaps
+ 0003:00000048       __os2hmod
+ 0003:00000060       __default87
+ 0003:00000064       _errno
+ 0003:00000068       __atexitcnt
+ 0003:0000006C       __exitbuf
+ 0003:00000070       __exitfopen
+ 0003:00000074  Idle __exitopen
+ 0003:00000078       __fmodeptr
+ 0003:0000007C       __multidll
+ 0003:000000A0       __pmatherr
+ 0003:000000A4       __pmatherrl
+ 0003:000000A8       __fmode
+ 0003:000000C0  Idle __dosErrorToSV
+ 0003:000001F0       __atexittbl
+ 0003:00000270       __dll_table
+ 0003:00000278       __ExcRegPtr
+ 0003:0000027C       __osenv
+ 0003:00000280       __oscmd
+ 0003:00000284       __C0argc
+ 0003:00000288       __C0argv
+ 0003:0000028C       __C0environ
+ 0003:00000298       __stkbase
+ 0003:0000029C  Idle __doserrno

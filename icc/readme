@@ -1,0 +1,57 @@
+To:   Laboratory users of OS/2
+From: Michael Thompson
+      tommy@msc.cornell.edu
+RE:   portio.h, portio.lib, portio.dll
+      Access to I/O ports from IBM CSET/2 programs
+Date: 3-May-93
+
+Routines:
+   unsigned short inp  (unsigned short port)
+   unsigned short inpw (unsigned short port)
+   unsigned short outp (unsigned short port, unsigned short byte)
+   unsigned short outpw(unsigned short port, unsigned short word)
+
+The removal of inp/outp/inpw/outpw in the migration from Microsoft
+C6.0 to IBM CSET/2 was very disappointing.  Drivers for laboratory
+data acquisition cards simply do not exist under OS/2.  Over the
+last few months, I have received numerous requests to provide
+example code showing how we directly access I/O ports through OS/2
+with the IBM CSET/2 compiler.  Rather than continue to point people
+to complex code, I've extracted and more thoroughly documented the
+necessary calls and assembly language interludes.
+
+The trick to creating these replacements was gleaned from the CSET/2
+User Manual section on calling 16:16 C-routines.  Basically, the
+inp/outp C calls are passed to an assembly language routine which
+runs at Ring 2 with IOPL priveleges.  The procedures use the
+_Fastcall convention passing all values in registers and hence
+should be reasonably fast.
+
+Because of the mixed programming modes (flat 32 and 16:16 asm
+interlude), there are some subleties to linking and usage.  The
+simplest mode is to use the DLL version of the portio routines.
+
+DLL version:
+  (1) place portio.dll somewhere within the scope of your LIBPATH
+  (2) #include "portio.h" in your C program
+  (3) link with the portio.lib
+
+In a slightly more complex mode, you can statically link the
+routines.  However, you must include a .DEF file to give the
+inp/outp routines IOPL priveleges.  See the TEST2.DEF example
+for the necessary SEGMENT declarations.
+
+Static linkage version:
+  (1) #include "portio.h" in your C program
+  (2) link with portio.obj and an appropriate .DEF file
+
+The program test.c is an example direct I/O handler that outputs
+a simple string to the printer via direct addressing.  It is
+linked with the dynamic module (test.exe) and as a static link
+version (test2.exe).  See the makefile for additional comments.
+
+Please pass any comments (or if you know of the solution to 
+modifying an ASM segment in the .DEF file) to me at the above
+address.
+
+Good luck.

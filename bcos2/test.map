@@ -1,0 +1,221 @@
+
+ Start         Length     Name                   Class
+ 0001:00000000 00000224CH _TEXT                  CODE
+ 0002:00000000 00000001CH _TEXT16                CODE
+ 0003:00000000 0000007A4H _DATA                  DATA
+ 0003:000007A4 000000012H _INIT_                 INITDATA
+ 0003:000007B6 000000000H _INITEND_              INITDATA
+ 0003:000007B6 000000000H _EXIT_                 EXITDATA
+ 0003:000007B6 000000000H _EXITEND_              EXITDATA
+ 0003:000007B8 000000000H CONST                  CONST
+ 0003:000007B8 00000036CH _BSS                   BSS
+ 0004:00000000 000001000H STACKBASE              
+ 0004:00001000 00000B000H _STACK                 STACK
+
+  Address         Publics by Name
+
+ 0003:00000118       _errno
+ 0001:000002CF       _exit
+ 0001:00000310       _fflush
+ 0001:00000A50       _fputc
+ 0001:000005E4       _free
+ 0001:00000176       _main
+ 0001:00000789       _malloc
+ 0001:00000B80       _memchr
+ 0001:00000BA0       _memcpy
+ 0001:00000BC8       _memset
+ 0001:00000C00       _printf
+ 0001:0000001C  Idle _SendChar
+ 0001:00000156  Idle _SendCommand
+ 0001:00001058       _strlen
+ 0001:00000000  Idle __acrtused
+ 0001:00000190       __allocbuf
+ 0003:0000011C       __atexitcnt
+ 0003:000007B8       __atexittbl
+ 0003:00000B08       __C0argc
+ 0003:00000B0C       __C0argv
+ 0003:00000B10       __C0environ
+ 0003:0000002B       __c0_heaps
+ 0003:0000002F       __c0_nheaps
+ 0001:000002F5  Idle __cexit
+ 0003:00000628       __cfinfo_get
+ 0003:00000630       __cfinfo_name
+ 0003:0000062C       __cfinfo_value
+ 0001:00000EB4       __cleanup
+ 0001:00001C5C       __control87
+ 0001:00000C5E       __create_shmem
+ 0001:00000301  Idle __c_exit
+ 0003:00000114       __default87
+ 0003:00000AF4       __dll_table
+ 0003:00000B20  Idle __doserrno
+ 0003:00000674  Idle __dosErrorToSV
+ 0001:00001DC9       __ErrorExit
+ 0001:00001D70       __ErrorMessage
+ 0003:00000AFC       __ExcRegPtr
+ 0001:000002E2       __exit
+ 0003:00000120       __exitbuf
+ 0003:00000124       __exitfopen
+ 0003:00000128  Idle __exitopen
+ 0001:00001A20       __flushall
+ 0003:0000064C       __fmode
+ 0003:00000590       __fmodeptr
+ 0001:00001C88       __fpreset
+ 0003:000008D8  Idle __free_dummy
+ 0003:000008E8       __free_list
+ 0001:000004E0       __getmem
+ 0001:00002100       __getpid
+ 0001:000006B3       __heapadd
+ 0003:000008F0       __heaps
+ 0003:00000594       __heap_brk
+ 0003:00000598  Idle __heap_top
+ 0001:000003E0       __initfmode
+ 0001:00001CA0       __initmatherr
+ 0001:00001D60       __initwild
+ 0001:00000CE2       __init_exit_proc
+ 0001:00001EA7       __init_handles
+ 0001:00000F80       __init_streams
+ 0001:00001CD0       __matherr
+ 0001:00001D10       __matherrl
+ 0003:000000B0       __nextrealptr
+ 0003:000004EC       __nfile
+ 0003:00000AF0       __nheaps
+ 0003:000004F0       __openfd
+ 0003:00000048       __os2hmod
+ 0003:00000B04       __oscmd
+ 0003:00000B00       __osenv
+ 0003:00000838       __pidtab
+ 0003:00000644       __pmatherr
+ 0003:00000648       __pmatherrl
+ 0003:000000AC       __realcvtptr
+ 0003:000008EC       __rover
+ 0001:00000683       __same_seg
+ 0001:0000022A       __scanrslt
+ 0003:000000B8       __scanrsltptr
+ 0001:00000224       __scantod
+ 0003:000000B4       __scantodptr
+ 0001:00000D9F       __startup
+ 0003:00000B1C       __stkbase
+ 0001:00001A60       __stpcpy
+ 0003:0000012C       __streams
+ 0001:00000F60       __terminate
+ 0001:0000206D       __virt_commit
+ 0001:000020B1       __virt_decommit
+ 0001:00002030       __virt_reserve
+ 0001:00002130       __write
+ 0001:000019D0       __xfflush
+ 0001:00002018       ___DOSerror
+ 0001:00001DBA  Idle ___ErrorMessage
+ 0001:000003F0       ___fputn
+ 0001:00001FD0       ___IOerror
+ 0001:00002170       ___isatty
+ 0001:00000980       ___longtoa
+ 0001:000021C0       ___lseek
+ 0001:0000021E       ___nextreal
+ 0001:00000218       ___realcvt
+ 0001:00000A34       ___utoa
+ 0001:00001111       ___vprinter
+ 0001:00001B66       ___write
+
+  Address         Publics by Value
+
+ 0001:00000000  Idle __acrtused
+ 0001:0000001C  Idle _SendChar
+ 0001:00000156  Idle _SendCommand
+ 0001:00000176       _main
+ 0001:00000190       __allocbuf
+ 0001:00000218       ___realcvt
+ 0001:0000021E       ___nextreal
+ 0001:00000224       __scantod
+ 0001:0000022A       __scanrslt
+ 0001:000002CF       _exit
+ 0001:000002E2       __exit
+ 0001:000002F5  Idle __cexit
+ 0001:00000301  Idle __c_exit
+ 0001:00000310       _fflush
+ 0001:000003E0       __initfmode
+ 0001:000003F0       ___fputn
+ 0001:000004E0       __getmem
+ 0001:000005E4       _free
+ 0001:00000683       __same_seg
+ 0001:000006B3       __heapadd
+ 0001:00000789       _malloc
+ 0001:00000980       ___longtoa
+ 0001:00000A34       ___utoa
+ 0001:00000A50       _fputc
+ 0001:00000B80       _memchr
+ 0001:00000BA0       _memcpy
+ 0001:00000BC8       _memset
+ 0001:00000C00       _printf
+ 0001:00000C5E       __create_shmem
+ 0001:00000CE2       __init_exit_proc
+ 0001:00000D9F       __startup
+ 0001:00000EB4       __cleanup
+ 0001:00000F60       __terminate
+ 0001:00000F80       __init_streams
+ 0001:00001058       _strlen
+ 0001:00001111       ___vprinter
+ 0001:000019D0       __xfflush
+ 0001:00001A20       __flushall
+ 0001:00001A60       __stpcpy
+ 0001:00001B66       ___write
+ 0001:00001C5C       __control87
+ 0001:00001C88       __fpreset
+ 0001:00001CA0       __initmatherr
+ 0001:00001CD0       __matherr
+ 0001:00001D10       __matherrl
+ 0001:00001D60       __initwild
+ 0001:00001D70       __ErrorMessage
+ 0001:00001DBA  Idle ___ErrorMessage
+ 0001:00001DC9       __ErrorExit
+ 0001:00001EA7       __init_handles
+ 0001:00001FD0       ___IOerror
+ 0001:00002018       ___DOSerror
+ 0001:00002030       __virt_reserve
+ 0001:0000206D       __virt_commit
+ 0001:000020B1       __virt_decommit
+ 0001:00002100       __getpid
+ 0001:00002130       __write
+ 0001:00002170       ___isatty
+ 0001:000021C0       ___lseek
+ 0003:0000002B       __c0_heaps
+ 0003:0000002F       __c0_nheaps
+ 0003:00000048       __os2hmod
+ 0003:000000AC       __realcvtptr
+ 0003:000000B0       __nextrealptr
+ 0003:000000B4       __scantodptr
+ 0003:000000B8       __scanrsltptr
+ 0003:00000114       __default87
+ 0003:00000118       _errno
+ 0003:0000011C       __atexitcnt
+ 0003:00000120       __exitbuf
+ 0003:00000124       __exitfopen
+ 0003:00000128  Idle __exitopen
+ 0003:0000012C       __streams
+ 0003:000004EC       __nfile
+ 0003:000004F0       __openfd
+ 0003:00000590       __fmodeptr
+ 0003:00000594       __heap_brk
+ 0003:00000598  Idle __heap_top
+ 0003:00000628       __cfinfo_get
+ 0003:0000062C       __cfinfo_value
+ 0003:00000630       __cfinfo_name
+ 0003:00000644       __pmatherr
+ 0003:00000648       __pmatherrl
+ 0003:0000064C       __fmode
+ 0003:00000674  Idle __dosErrorToSV
+ 0003:000007B8       __atexittbl
+ 0003:00000838       __pidtab
+ 0003:000008D8  Idle __free_dummy
+ 0003:000008E8       __free_list
+ 0003:000008EC       __rover
+ 0003:000008F0       __heaps
+ 0003:00000AF0       __nheaps
+ 0003:00000AF4       __dll_table
+ 0003:00000AFC       __ExcRegPtr
+ 0003:00000B00       __osenv
+ 0003:00000B04       __oscmd
+ 0003:00000B08       __C0argc
+ 0003:00000B0C       __C0argv
+ 0003:00000B10       __C0environ
+ 0003:00000B1C       __stkbase
+ 0003:00000B20  Idle __doserrno

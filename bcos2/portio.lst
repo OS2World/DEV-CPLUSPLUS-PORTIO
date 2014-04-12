@@ -1,0 +1,424 @@
+Turbo Assembler	 Version 3.21	     07-11-93 15:56:06	    Page 1
+portio.ASM
+
+
+
+      1					 ; ******************************************************************
+      2					 ;   <portio.asm> code file
+      3					 ;
+      4					 ;   Function definitions for port access routines
+      5					 ;	  inp(port)   -	read single byte from I/O port
+      6					 ;	  inpw(port)  -	read single word from I/O port pair
+      7					 ;	  outp(port,short)  - write single byte	to I/O port
+      8					 ;	  outpw(port,short) - write single word	to I/O port pair
+      9					 ;
+     10					 ;   Originally	for IBM	C Set/2	 Version 1.0
+     11					 ;   Ported to Borland C++ for OS/2 Version 1.0
+     12					 ;
+     13					 ;  DISCLAIMER:
+     14					 ;  -------------------------
+     15					 ;  This code and the accompanying documentation is hereby placed in
+     16					 ;  the	public domain.	It is not part of any standard product and
+     17					 ;  is provided	solely as an example for your private and/or
+     18					 ;  commercial use.  You may freely use	or distribute this code	in
+     19					 ;  derived works as long as you do not	attempt	to prevent others
+     20					 ;  from doing likewise.  Neither the author, nor his employer,
+     21					 ;  shall be liable for	any damages arising from your use of this
+     22					 ;  code; it is	provided solely	ASIS with no warranty whatsoever.
+     23					 ;
+     24					 ;  Author contact:   Michael Thompson
+     25					 ;		      tommy@msc.cornell.edu
+     26					 ;
+     27					 ;  Ported to Borland C++ for OS/2 by:
+     28					 ;		      Cy Schubert
+     29					 ;		      cschuber@bcsc02.gov.bc.ca
+     30					 ; ******************************************************************
+     31
+     32							 MASM
+     33							 .486P
+     34							 NOSMART
+     35	00000000					 .MODEL	 OS2 LARGE, C
+     36	    0000			 P@IOCODE	 segment WORD PUBLIC USE16 'CODE'
+     37							 assume	 cs:P@IOCODE
+     38							 INCLUDE iopl.inc
+1    39					 ;; The	$IOPL macro is designed	to fill	a gap left by Borland's	Turbo Linker
+1    40					 ;; (TLINK) when creating IOPL code segments.  Apparently TLINK	fills the
+1    41					 ;; count field	of the gate descriptor with zero thereby disallowing the
+1    42					 ;; passing of parameters from non-IOPL	code to	IOPL code.  This macro
+1    43					 ;; copies the parameters from a non-priviledged stack to a priviledged
+1    44					 ;; stack as the hardware would	as if the count	field were filled.  The	only
+1    45					 ;; limitation is that if this macro is	used it	assumes	that the routine
+1    46					 ;; is called by a non-priviledged routine.  It	will not work when this
+1    47					 ;; code is called by priviledged code.	 Once Borland has TLINK	fixed this
+1    48					 ;; macro will no longer be required.
+1    49					 ;;
+1    50					 ;; To use the macro code the following:
+1    51					 ;;
+1    52					 ;;	 $IOPL #_of_bytes_to_copy,program_to_call
+1    53					 ;;
+1    54					 ;;		 INCLUDE iopl.inc
+1    55					 ;;entry_point	 PROC	 FAR
+1    56					 ;;		 $IOPL	 number_of_bytes,called_proc
+1    57					 ;;		 public	 entry_point
+Turbo Assembler	 Version 3.21	     07-11-93 15:56:06	    Page 2
+portio.ASM
+
+
+
+1    58					 ;;outp		 ENDP
+1    59					 ;;
+1    60					 ;;called_proc	 PROC	 NEAR
+1    61					 ;;		 .
+1    62					 ;;		 .
+1    63					 ;;		 .
+1    64					 ;;		 ret
+1    65					 ;;
+1    66					 ;;outp2		 endp
+1    67					 ;;
+1    68					 ;;
+1    69					 $IOPL	 MACRO	 numbytes,entry_point
+1    70						 enterw	 numbytes,0		 ; stack frame for parameters
+1    71						 push	 cx
+1    72						 push	 si
+1    73						 push	 di
+1    74						 push	 ds
+1    75						 push	 es
+1    76						 mov	 cx,numbytes
+1    77						 lds	 si,[bp	+ 6]		 ; non-priviledged stack
+1    78						 mov	 di,ss			 ; priviledged stack
+1    79						 mov	 es,di
+1    80						 mov	 di,bp
+1    81						 sub	 di, numbytes
+1    82						 rep	 movsb			 ; copy	stack
+1    83						 pop	 es
+1    84						 pop	 ds
+1    85						 pop	 di
+1    86						 pop	 si
+1    87						 pop	 cx
+1    88						 call	 entry_point		 ; call	program
+1    89						 add	 sp,numbytes
+1    90						 leavew
+1    91						 ret
+1    92						 ENDM
+1    93
+     94
+     95					 ;=============================================================================
+     96					 ; These routines must be declared as
+     97					 ;
+     98					 ;	 unsigned short	_far16 _cdecl inp(unsigned short port);
+     99					 ;	 unsigned short	_far16 _cdecl inpw(unsigned short port);
+    100					 ;	 unsigned short	_far16 _cdecl outp(unsigned short, unsigned short);
+    101					 ;	 unsigned short	_far16 _cdecl outpw(unsigned short, unsigned short);
+    102					 ;
+    103					 ; in the BCOS2	declarations.  The "C" calling convention passes parameters
+    104					 ; on the stack.  I would have been simpler to store the variables in
+    105					 ; registers AX	and DX but in order to prove that it could be done,
+    106					 ; parameters are passed on the	stack.	The reason for using the "C" calling
+    107					 ; convention is so that registers get popped off the callers stack upon
+    108					 ; return.  This is due	to a bug in the	Turbo Linker (TLINK).  OS/2
+    109					 ; linkage editors should create a call	gate in	order to allow non-priviledged
+    110					 ; programs to invoke priviledged programs.  TLINK does	this but it does not
+    111					 ; allow for filling in	of the number of words to be copied from the
+    112					 ; non-priviledged stack to the	priviledged stack.  Therefore parameters must
+    113					 ; be copied over by the application.  This imposes a limitiation on on	this
+    114					 ; code.  This code may	only be	called by less priviledged code.  If code of
+Turbo Assembler	 Version 3.21	     07-11-93 15:56:06	    Page 3
+portio.ASM
+
+
+
+    115					 ; equal priviledge requires to	call this code the $IOPL macro must be
+    116					 ; removed.  The short return allows the use of	AX only	on exit.This should
+    117					 ; be nearly at	the limit of the 32->16	call convention.
+    118					 ;
+    119					 ; Compiling and linkage requires these	routines to be stored in a DLL so are
+    120					 ; 16 bit.  I could make them 32 bit IF	I could	get a true protected mode 32
+    121					 ; bit assembler.  Microsoft maybe there, but I	refuse to buy their toys
+    122					 ; anymore.
+    123					 ;
+    124					 ; General make	process	can be viewed in MAKEFILE.
+    125					 ;
+    126					 ; portio.def must contain:
+    127					 ;    LIBRARY PORTIO
+    128					 ;    DESCRIPTION 'Dynamically-linked Run-Time Library for Port	Access'
+    129					 ;    PROTMODE
+    130					 ;    CODE PRELOAD EXECUTEONLY
+    131					 ;    STACKSIZE	1024
+    132					 ;
+    133					 ;    SEGMENTS
+    134					 ;     P@IOCODE	   CLASS 'CODE'	PRELOAD	EXECUTEONLY IOPL
+    135					 ;
+    136					 ;    EXPORTS
+    137					 ;     _inp
+    138					 ;     _outp
+    139					 ;     _inpw
+    140					 ;     _outpw
+    141					 ;
+    142					 ; CODE	IOPL cannot be specified.  It must be specified	in a separate
+    143					 ; Segments statement.	If CODE	IOPL is	specified, TLINK abends	with a
+    144					 ; "general error".  Granting the _TEXT	segment	also results in	a "general
+    145					 ; error" in TLINK.
+    146					 ;=============================================================================
+    147
+    148
+    149
+    150					 ;=============================================================================
+    151					 ; Subroutine to output	byte to	specified port
+    152					 ;
+    153					 ; Usage:  unsigned short = outp (unsigned short port, unsigned	short byte)
+    154					 ;	   unsigned short = outpw(unsigned short port, unsigned	short word)
+    155					 ;
+    156					 ; Inputs: AX -	port
+    157					 ;	   DX -	contains value to be sent (low byte only for outp)
+    158					 ;
+    159					 ; Output: AX -	byte value sent
+    160					 ;=============================================================================
+    161	    0000			 outp		 PROC	 FAR
+    162							 $IOPL	 4,outp2
+1   163	    0000  C8 0004 00			 enterw	 4,0		 ; stack frame for parameters
+1   164	    0004  51				 push	 cx
+1   165	    0005  56				 push	 si
+1   166	    0006  57				 push	 di
+1   167	    0007  1E				 push	 ds
+1   168	    0008  06				 push	 es
+1   169	    0009  B9 0004			 mov	 cx,4
+1   170	    000C  C5 76	06			 lds	 si,[bp	+ 6]		 ; non-priviledged stack
+1   171	    000F  8C D7				 mov	 di,ss			 ; priviledged stack
+Turbo Assembler	 Version 3.21	     07-11-93 15:56:06	    Page 4
+portio.ASM
+
+
+
+1   172	    0011  8E C7				 mov	 es,di
+1   173	    0013  8B FD				 mov	 di,bp
+1   174	    0015  83 EF	04			 sub	 di, 4
+1   175	    0018  F3> A4			 rep	 movsb			 ; copy	stack
+1   176	    001A  07				 pop	 es
+1   177	    001B  1F				 pop	 ds
+1   178	    001C  5F				 pop	 di
+1   179	    001D  5E				 pop	 si
+1   180	    001E  59				 pop	 cx
+1   181	    001F  E8 0005			 call	 outp2		 ; call	program
+1   182	    0022  83 C4	04			 add	 sp,4
+1   183	    0025  C9				 leavew
+2   184	    0026  CB				 RET	 00000h
+    185							 public	 outp
+    186	    0027			 outp		 ENDP
+    187
+    188	    0027			 outp2		 PROC	 NEAR
+    189					 USES	 dx
+    190							 assume	 ds:nothing,es:nothing
+1   191	    0027  52				 PUSH	 DX
+1   192	    0028  C8 0000 00				 enterw	 0,0
+    193	    002C  8B 56	06				 mov	 dx, [bp+6]		 ; get port
+    194	    002F  8B 46	08				 mov	 ax, [bp+8]		 ; get byte
+    195	    0032  EE					 out	 dx,al			 ; And send one	byte
+    196	    0033  66| 0F B6 C0				 movzx	 eax,al			 ; Say didn't send hi
+    197					 ;
+    198	    0037  C9					 leavew
+1   199	    0038  5A				 POP	 DX
+1   200	    0039  C3				 RET	 00000h
+    201					 ;
+    202	    003A			 outp2		 endp
+    203
+    204	    003A			 outpw		 PROC	 FAR
+    205							 $IOPL	 4,outpw2
+1   206	    003A  C8 0004 00			 enterw	 4,0		 ; stack frame for parameters
+1   207	    003E  51				 push	 cx
+1   208	    003F  56				 push	 si
+1   209	    0040  57				 push	 di
+1   210	    0041  1E				 push	 ds
+1   211	    0042  06				 push	 es
+1   212	    0043  B9 0004			 mov	 cx,4
+1   213	    0046  C5 76	06			 lds	 si,[bp	+ 6]		 ; non-priviledged stack
+1   214	    0049  8C D7				 mov	 di,ss			 ; priviledged stack
+1   215	    004B  8E C7				 mov	 es,di
+1   216	    004D  8B FD				 mov	 di,bp
+1   217	    004F  83 EF	04			 sub	 di, 4
+1   218	    0052  F3> A4			 rep	 movsb			 ; copy	stack
+1   219	    0054  07				 pop	 es
+1   220	    0055  1F				 pop	 ds
+1   221	    0056  5F				 pop	 di
+1   222	    0057  5E				 pop	 si
+1   223	    0058  59				 pop	 cx
+1   224	    0059  E8 0005			 call	 outpw2		 ; call	program
+1   225	    005C  83 C4	04			 add	 sp,4
+1   226	    005F  C9				 leavew
+2   227	    0060  CB				 RET	 00000h
+    228							 public	 outpw
+Turbo Assembler	 Version 3.21	     07-11-93 15:56:06	    Page 5
+portio.ASM
+
+
+
+    229	    0061			 outpw		 ENDP
+    230
+    231	    0061			 outpw2		 PROC	 NEAR
+    232					 USES	 dx
+    233							 assume	 ds:nothing,es:nothing
+1   234	    0061  52				 PUSH	 DX
+1   235	    0062  C8 0000 00				 enterw	 0,0
+    236					 ;
+    237	    0066  8B 56	06				 mov	 dx, [bp+6]		 ; get port
+    238	    0069  8B 46	08				 mov	 ax, [bp+8]		 ; get byte
+    239	    006C  EF					 out	 dx,ax			 ; And send one	word
+    240					 ;
+    241	    006D  C9					 leavew
+1   242	    006E  5A				 POP	 DX
+1   243	    006F  C3				 RET	 00000h
+    244					 ;
+    245	    0070			 outpw2		 endp
+    246
+    247
+    248					 ;=============================================================================
+    249					 ; Subroutine to read input from a specified port
+    250					 ;
+    251					 ; Usage:  unsigned short = inp	(unsigned short	port)
+    252					 ;	   unsigned short = inpw(unsigned short	port)
+    253					 ;
+    254					 ; Inputs: AX -	port
+    255					 ;
+    256					 ; Output: AX -	byte (word) value received
+    257					 ;=============================================================================
+    258	    0070			 inp		 PROC	 FAR
+    259							 $IOPL	 2,inp2
+1   260	    0070  C8 0002 00			 enterw	 2,0		 ; stack frame for parameters
+1   261	    0074  51				 push	 cx
+1   262	    0075  56				 push	 si
+1   263	    0076  57				 push	 di
+1   264	    0077  1E				 push	 ds
+1   265	    0078  06				 push	 es
+1   266	    0079  B9 0002			 mov	 cx,2
+1   267	    007C  C5 76	06			 lds	 si,[bp	+ 6]		 ; non-priviledged stack
+1   268	    007F  8C D7				 mov	 di,ss			 ; priviledged stack
+1   269	    0081  8E C7				 mov	 es,di
+1   270	    0083  8B FD				 mov	 di,bp
+1   271	    0085  83 EF	02			 sub	 di, 2
+1   272	    0088  F3> A4			 rep	 movsb			 ; copy	stack
+1   273	    008A  07				 pop	 es
+1   274	    008B  1F				 pop	 ds
+1   275	    008C  5F				 pop	 di
+1   276	    008D  5E				 pop	 si
+1   277	    008E  59				 pop	 cx
+1   278	    008F  E8 0005			 call	 inp2		 ; call	program
+1   279	    0092  83 C4	02			 add	 sp,2
+1   280	    0095  C9				 leavew
+2   281	    0096  CB				 RET	 00000h
+    282							 public	 inp
+    283	    0097			 inp		 ENDP
+    284
+    285	    0097			 inp2		 PROC	 NEAR
+Turbo Assembler	 Version 3.21	     07-11-93 15:56:06	    Page 6
+portio.ASM
+
+
+
+    286					 USES	 dx
+    287							 assume	 ds:nothing,es:nothing
+1   288	    0097  52				 PUSH	 DX
+1   289	    0098  C8 0000 00				 enterw	 0,0
+    290					 ;
+    291	    009C  8B 56	06				 mov	 dx, [bp+6]		 ; get port
+    292	    009F  EC					 in	 al,dx			 ; Read	the byte
+    293	    00A0  66| 0F B6 C0				 movzx	 eax,al			 ; Clear AH
+    294					 ;
+    295	    00A4  C9					 leavew
+1   296	    00A5  5A				 POP	 DX
+1   297	    00A6  C3				 RET	 00000h
+    298					 ;
+    299	    00A7			 inp2		 endp
+    300
+    301	    00A7			 inpw		 PROC	 FAR
+    302							 $IOPL	 2,inpw2
+1   303	    00A7  C8 0002 00			 enterw	 2,0		 ; stack frame for parameters
+1   304	    00AB  51				 push	 cx
+1   305	    00AC  56				 push	 si
+1   306	    00AD  57				 push	 di
+1   307	    00AE  1E				 push	 ds
+1   308	    00AF  06				 push	 es
+1   309	    00B0  B9 0002			 mov	 cx,2
+1   310	    00B3  C5 76	06			 lds	 si,[bp	+ 6]		 ; non-priviledged stack
+1   311	    00B6  8C D7				 mov	 di,ss			 ; priviledged stack
+1   312	    00B8  8E C7				 mov	 es,di
+1   313	    00BA  8B FD				 mov	 di,bp
+1   314	    00BC  83 EF	02			 sub	 di, 2
+1   315	    00BF  F3> A4			 rep	 movsb			 ; copy	stack
+1   316	    00C1  07				 pop	 es
+1   317	    00C2  1F				 pop	 ds
+1   318	    00C3  5F				 pop	 di
+1   319	    00C4  5E				 pop	 si
+1   320	    00C5  59				 pop	 cx
+1   321	    00C6  E8 0005			 call	 inpw2		 ; call	program
+1   322	    00C9  83 C4	02			 add	 sp,2
+1   323	    00CC  C9				 leavew
+2   324	    00CD  CB				 RET	 00000h
+    325							 public	 inpw
+    326	    00CE			 inpw		 ENDP
+    327
+    328	    00CE			 inpw2		 PROC	 NEAR
+    329					 USES	 dx
+    330							 assume	 ds:nothing,es:nothing
+1   331	    00CE  52				 PUSH	 DX
+1   332	    00CF  C8 0000 00				 enterw	 0,0
+    333					 ;
+    334	    00D3  8B 56	08				 mov	 dx, [bp+8]		 ; get port
+    335	    00D6  ED					 in	 ax,dx			 ; Read	the word
+    336					 ;
+    337	    00D7  C9					 leavew
+1   338	    00D8  5A				 POP	 DX
+1   339	    00D9  C3				 RET	 00000h
+    340					 ;
+    341	    00DA			 inpw2		 endp
+    342
+Turbo Assembler	 Version 3.21	     07-11-93 15:56:06	    Page 7
+portio.ASM
+
+
+
+    343	    00DA			 P@IOCODE		 ends
+    344					 ;
+    345							 end
+Turbo Assembler	 Version 3.21	     07-11-93 15:56:06	    Page 8
+Symbol Table
+
+
+
+
+Symbol Name		Type   Value			   Cref	(defined at #)
+
+??DATE			Text   "07-11-93"
+??FILENAME		Text   "portio	"
+??TIME			Text   "15:56:06"
+??VERSION		Number 0315
+@32BIT			Text   1			   #35
+@CODE			Text   PORTIO_TEXT		   #35	#35
+@CODESIZE		Text   1			   #35
+@CPU			Text   1F9FH			   #33
+@CURSEG			Text   P@IOCODE			   #36
+@DATA			Text   DGROUP			   #35
+@DATASIZE		Text   1			   #35
+@FILENAME		Text   PORTIO
+@INTERFACE		Text   81H			   #35
+@MODEL			Text   5			   #35
+@STACK			Text   DGROUP			   #35
+@WORDSIZE		Text   2			   #33	#36
+INP (_inp)		Far    P@IOCODE:0070		   #258	 282
+INP2			Near   P@IOCODE:0097		   278	#285
+INPW (_inpw)		Far    P@IOCODE:00A7		   #301	 325
+INPW2			Near   P@IOCODE:00CE		   321	#328
+OUTP (_outp)		Far    P@IOCODE:0000		   #161	 185
+OUTP2			Near   P@IOCODE:0027		   181	#188
+OUTPW (_outpw)		Far    P@IOCODE:003A		   #204	 228
+OUTPW2			Near   P@IOCODE:0061		   224	#231
+
+Macro Name						   Cref	(defined at #)
+
+$IOPL							   #69	162  205  259  302
+
+Groups & Segments	Bit Size Align	Combine	Class	   Cref	(defined at #)
+
+DGROUP			Group				   #35	35
+  _DATA			32  0000 Dword	Public	DATA	   #35
+P@IOCODE		16  00DA Word	Public	CODE	   #36	37
+PORTIO_TEXT		32  0000 Dword	Public	CODE	   #35	35
+

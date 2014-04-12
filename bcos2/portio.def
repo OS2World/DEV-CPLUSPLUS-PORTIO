@@ -1,0 +1,38 @@
+; -------------------------------------------------------------------------
+; Dynamic link library providing inp, outp, inpw, outpw to BCOS2
+;
+; This definition module defines the exports available in the .DLL file
+; to be created.  This is the "safe" way to use inp/outp since the code
+; is physically separated, and only this DLL is given IOPL priveleges.
+;
+; Specification of the CODE IOPL or SEGMENTS _TEXT IOPL statements causes
+; a "general error" in TLINK.  This should be no problem since giving IOPL
+; priviledges to all the code in an EXE or DLL would be foolish.
+;
+; Explanation of some statements
+;
+; LIBRARY PORTIO                  Name of DLL (MUST match real name)
+; CODE PRELOAD EXECUTEONLY IOPL   Default IOPL in segments of class CODE
+;                                 Might as well preload since it is so
+;                                 small, but mark execute only.
+; PROTMODE                        This is a protect mode program only
+; EXPORTS                         List of names exported by the DLL
+; _inp                            External name of a _far16 _cdecl inp()
+; ...
+;
+; ---------------------------------------------------------------------------
+LIBRARY PORTIO
+DESCRIPTION 'Dynamically-linked Run-Time Library for Port Access'
+PROTMODE
+CODE PRELOAD EXECUTEONLY
+STACKSIZE 1024
+
+SEGMENTS
+ P@IOCODE    CLASS 'CODE' PRELOAD EXECUTEONLY IOPL
+
+EXPORTS                                       
+ _inp
+ _outp
+ _inpw
+ _outpw
+

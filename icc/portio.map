@@ -1,0 +1,12 @@
+
+ PORTIO
+
+ Start         Length     Name                   Class
+ 0001:00000000 000000012H P@IOCODE               CODE 16-bit
+
+ Address       Export                  Alias
+
+ 0001:00000008 @inp                    @inp
+ 0001:0000000E @inpw                   @inpw
+ 0001:00000000 @outp                   @outp
+ 0001:00000005 @outpw                  @outpw
